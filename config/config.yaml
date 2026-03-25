@@ -1,0 +1,6 @@
+connect_storage: "host=localhost port=5432 user=postgres password=postgres dbname=db_avito"
+http_server: 
+  address: "localhost:8080"
+  timeout: 5s
+  idle_timeout: 60s
+secret_key: "secret_key"

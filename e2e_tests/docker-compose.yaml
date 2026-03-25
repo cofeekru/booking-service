@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  app:
+    build: ../
+    ports:
+      - "8080:8080"
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: db_avito
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      JWT_SECRET: secret_key
+    depends_on:
+      - db
+    networks:
+      - e2e-network
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: db_avito
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data_e2e:/var/lib/postgresql/data
+    networks:
+      - e2e-network
+
+volumes:
+  postgres_data_e2e:
+
+networks:
+  e2e-network:
+    driver: bridge
