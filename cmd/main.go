@@ -4,6 +4,7 @@ import (
 	"avito_tech_backend/internal/config"
 	"avito_tech_backend/internal/database"
 	"avito_tech_backend/internal/handlers"
+	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -12,8 +13,10 @@ import (
 )
 
 func main() {
-	cfg := config.MustLoad("./config/config.yaml")
-	storage, err := database.New(cfg.ConnectStorage)
+	cfg := config.MustLoad()
+
+	connectStorage := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", cfg.DB_HOST, cfg.DB_PORT, cfg.DB_USER, cfg.DB_PASSWORD, cfg.DB_NAME, cfg.DB_SSL_MODE)
+	storage, err := database.New(connectStorage)
 
 	if err != nil {
 		log.Fatalf("Failed to init storage: %s", err)
@@ -38,14 +41,14 @@ func main() {
 		r.Post("/create", handlers.BookingsCreateHandler(storage))
 		r.Get("/list", handlers.BookingsListHandler(storage))
 		r.Get("/my", handlers.BookingsMyHandler(storage))
-		r.Get("/{bookingId}/cancel", handlers.BookingsCancelHandler(storage))
+		r.Post("/{bookingId}/cancel", handlers.BookingsCancelHandler(storage))
 	})
 
 	router.Get("/_info", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
 	server := &http.Server{
-		Addr:        cfg.Address,
+		Addr:        cfg.HTTPServer.Host,
 		Handler:     router,
 		ReadTimeout: cfg.HTTPServer.Timeout,
 		IdleTimeout: cfg.HTTPServer.IdleTimeout,

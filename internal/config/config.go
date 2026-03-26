@@ -2,41 +2,39 @@ package config
 
 import (
 	"log"
-	"os"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/ilyakaznacheev/cleanenv"
+	"github.com/joho/godotenv"
 )
 
-func MustLoad(configPath string) *Config {
-	if configPath == "" {
-		log.Fatal("Config path is not set")
-	}
-
-	if _, err := os.Stat(configPath); os.IsNotExist(err) {
-		log.Fatalf("Config file does not exist: %v", configPath)
-	}
-
+func MustLoad() *Config {
 	var cfg Config
-	if err := cleanenv.ReadConfig(configPath, &cfg); err != nil {
+	godotenv.Load(".env")
+	if err := cleanenv.ReadEnv(&cfg); err != nil {
 		log.Fatalf("Cannot read config: %v", err)
 	}
+	SecretKey = []byte(cfg.SECRET_KEY)
 
-	SecretKey = []byte(cfg.SecretKey)
 	return &cfg
 }
 
 type Config struct {
-	HTTPServer     `yaml:"http_server"`
-	SecretKey      string `yaml:"secret_key"`
-	ConnectStorage string `yaml:"connect_storage"`
+	HTTPServer
+	DB_HOST     string `env:"DB_HOST"`
+	DB_NAME     string `env:"DB_NAME"`
+	DB_PORT     string `env:"DB_PORT"`
+	DB_USER     string `env:"DB_USER"`
+	DB_PASSWORD string `env:"DB_PASSWORD"`
+	DB_SSL_MODE string `env:"DB_SSL_MODE"`
+	SECRET_KEY  string `env:"SECRET_KEY"`
 }
 
 type HTTPServer struct {
-	Address     string        `yaml:"address"`
-	Timeout     time.Duration `yaml:"timeout" env-default:"5s"`
-	IdleTimeout time.Duration `yaml:"idle_timeout" env-default:"30s"`
+	Host        string        `env:"HOST"`
+	Timeout     time.Duration `env:"TIMEOUT"`
+	IdleTimeout time.Duration `env:"IDLE_TIMEOUT"`
 }
 
 type Token struct {

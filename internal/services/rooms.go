@@ -20,5 +20,9 @@ func RoomsCreate(storage config.Database, user config.User, room *config.Room) e
 	room.ID, _ = uuid.NewUUID()
 
 	err := storage.CreateRoom(user.ID, room)
+
+	if err != nil {
+		return nil
+	}
 	return err
 }

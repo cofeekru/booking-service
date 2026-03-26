@@ -2,6 +2,7 @@ package services
 
 import (
 	"avito_tech_backend/internal/config"
+	"log/slog"
 
 	"time"
 
@@ -11,11 +12,13 @@ import (
 func SlotsList(storage config.Database, roomID uuid.UUID, dateRequestString string) ([]config.Slot, error) {
 	date, err := time.Parse("2006-01-02", dateRequestString)
 	if err != nil {
+		slog.Error(err.Error())
 		return []config.Slot{}, err
 	}
 
 	result, err := storage.GetSlotsList(roomID, date)
 	if err != nil {
+		slog.Error(err.Error())
 		return []config.Slot{}, err
 	}
 	return result, err

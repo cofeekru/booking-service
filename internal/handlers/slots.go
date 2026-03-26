@@ -29,11 +29,13 @@ func SlotsListHeader(storage config.Database) http.HandlerFunc {
 		dateRequest := r.URL.Query().Get("date")
 
 		if dateRequest == "" {
+			slog.Error("Empty date")
 			http.Error(w, string(config.INVALID_REQUEST), http.StatusBadRequest)
 			return
 		}
 
 		if !services.RoomExist(storage, roomID) {
+			slog.Error("Room doesn't exist")
 			http.Error(w, string(config.INVALID_REQUEST), http.StatusNotFound)
 			return
 		}
