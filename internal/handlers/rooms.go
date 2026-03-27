@@ -53,7 +53,7 @@ func RoomsCreateHandler(storage config.Database) http.HandlerFunc {
 			return
 		}
 
-		err = services.RoomsCreate(storage, user, &room)
+		room, err = services.RoomsCreate(storage, user, room)
 		if err != nil {
 			slog.Error(err.Error())
 			http.Error(w, string(config.INTERNAL_ERROR), http.StatusInternalServerError)

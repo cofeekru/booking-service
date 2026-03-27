@@ -12,7 +12,6 @@ import (
 	"github.com/google/uuid"
 )
 
-// Тесты для RoomExist
 func TestRoomExist(t *testing.T) {
 	tests := []struct {
 		name       string
@@ -61,7 +60,6 @@ func TestRoomExist(t *testing.T) {
 	}
 }
 
-// Тесты для RoomsList
 func TestRoomsList(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -107,7 +105,6 @@ func TestRoomsList(t *testing.T) {
 				t.Errorf("RoomsList() error = %v, wantErr %v", err, tt.wantErr)
 			}
 
-			// Проверяем, что результат не nil при отсутствии ошибки
 			if !tt.wantErr && result == nil {
 				t.Error("RoomsList() returned nil result, want non-nil")
 			}
@@ -115,41 +112,40 @@ func TestRoomsList(t *testing.T) {
 	}
 }
 
-// Тесты для RoomsCreate
 func TestRoomsCreate(t *testing.T) {
 	tests := []struct {
 		name    string
 		setup   func() *mocks.MockDatabase
 		user    config.User
-		room    *config.Room
+		room    config.Room
 		wantErr bool
 	}{
 		{
 			name: "Successful room creation",
 			setup: func() *mocks.MockDatabase {
 				mock := &mocks.MockDatabase{
-					CreateRoomFunc: func(userID uuid.UUID, room *config.Room) error {
+					CreateRoomFunc: func(userID uuid.UUID, room config.Room) error {
 						return nil
 					},
 				}
 				return mock
 			},
 			user:    config.User{ID: uuid.New()},
-			room:    &config.Room{Name: "Test Room"},
+			room:    config.Room{Name: "Test Room"},
 			wantErr: false,
 		},
 		{
 			name: "Error during room creation",
 			setup: func() *mocks.MockDatabase {
 				mock := &mocks.MockDatabase{
-					CreateRoomFunc: func(userID uuid.UUID, room *config.Room) error {
+					CreateRoomFunc: func(userID uuid.UUID, room config.Room) error {
 						return errors.New("database error")
 					},
 				}
 				return mock
 			},
 			user:    config.User{ID: uuid.New()},
-			room:    &config.Room{Name: "Test Room"},
+			room:    config.Room{Name: "Test Room"},
 			wantErr: true,
 		},
 	}
@@ -158,7 +154,7 @@ func TestRoomsCreate(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			mockDB := tt.setup()
 
-			err := services.RoomsCreate(mockDB, tt.user, tt.room)
+			_, err := services.RoomsCreate(mockDB, tt.user, tt.room)
 
 			if (err != nil) != tt.wantErr {
 				t.Errorf("RoomsCreate() error = %v, wantErr %v", err, tt.wantErr)

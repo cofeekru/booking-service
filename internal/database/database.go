@@ -54,7 +54,7 @@ func (storage *Storage) createUsersTable() error {
 			email VARCHAR(255) UNIQUE NOT NULL,
 			password VARCHAR(255) NOT NULL,
 			role VARCHAR(10) NOT NULL,
-			created_at TIMESTAMP WITH TIME ZONE NOT NULL
+			created_at TIMESTAMP
 		)
 	`)
 	return err
@@ -68,7 +68,7 @@ func (storage *Storage) createRoomsTable() error {
 			name VARCHAR(255) UNIQUE NOT NULL,
 			description VARCHAR(255),
 			capacity INT,
-			created_at TIMESTAMPTZ
+			created_at TIMESTAMP
 		)
 	`)
 	return err

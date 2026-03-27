@@ -26,6 +26,9 @@ func main() {
 
 	router.Post("/dummyLogin", handlers.DummyLoginHandler())
 
+	router.Post("/register", handlers.RegisterHandler(storage))
+	router.Post("/login", handlers.LoginHandler(storage))
+
 	router.Route("/rooms", func(r chi.Router) {
 		r.Use(handlers.AuthMiddlewareHandler)
 

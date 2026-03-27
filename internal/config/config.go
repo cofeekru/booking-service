@@ -44,8 +44,9 @@ type Token struct {
 type User struct {
 	ID        uuid.UUID `json:"id"`
 	Email     string    `json:"email"`
-	UserRole  `json:"role"`
-	CreatedAt *time.Time `json:"createdAt,omitempty"`
+	Role      string    `json:"role"`
+	Password  string    `json:"password,omitempty"`
+	CreatedAt string    `json:"createdAt,omitempty"`
 }
 
 var DummyUserUUID uuid.UUID = uuid.MustParse("750cd68b-5736-4abf-a736-578a428d6c01")
@@ -68,6 +69,9 @@ func (ur UserRole) Valid() bool {
 }
 
 type Database interface {
+	CreateUser(user User) error
+	GetUserByEmail(email string) (User, error)
+
 	CreateSchedule(schedule *Schedule, roomID uuid.UUID, user User) error
 	CreateSlot(slot Slot, startSlot time.Time, endSlot time.Time) error
 	GetSlotsList(roomID uuid.UUID, dateRequest time.Time) ([]Slot, error)
@@ -81,20 +85,20 @@ type Database interface {
 	GetBookingBySlotID(slotID uuid.UUID) (Booking, error)
 	CancelBookingByBookingID(bookingID uuid.UUID) (Booking, error)
 
-	CreateRoom(serID uuid.UUID, room *Room) error
+	CreateRoom(userID uuid.UUID, room Room) error
 	GetRoom(roomID uuid.UUID) (Room, error)
 	GetRoomsList() ([]Room, error)
 }
 type Room struct {
-	ID          uuid.UUID  `json:"id"`
-	Name        string     `json:"name"`
-	Description string     `json:"description,omitempty"`
-	Capacity    int        `json:"capacity,omitempty"`
-	CreatedAt   *time.Time `json:"createdAt,omitempty"`
+	ID          uuid.UUID `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description,omitempty"`
+	Capacity    int       `json:"capacity,omitempty"`
+	CreatedAt   string    `json:"createdAt,omitempty"`
 }
 
 type Schedule struct {
-	ID         uuid.UUID `json:"id,omitempty"`
+	ID         uuid.UUID `json:"id"`
 	RoomID     uuid.UUID `json:"roomId"`
 	DaysOfWeek []int     `json:"daysOfWeek"`
 	StartTime  string    `json:"startTime"`
@@ -114,7 +118,7 @@ type Booking struct {
 	UserID         uuid.UUID     `json:"userId"`
 	Status         BookingStatus `json:"status"`
 	ConferenceLink string        `json:"conferenceLink,omitempty"`
-	CreatedAt      *time.Time    `json:"createdAt,omitempty"`
+	CreatedAt      string        `json:"createdAt,omitempty"`
 }
 
 type BookingStatus string

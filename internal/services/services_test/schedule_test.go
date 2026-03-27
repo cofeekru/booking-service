@@ -80,7 +80,6 @@ func TestScheduleExist(t *testing.T) {
 	}
 }
 
-// Тесты для ValidSchedule
 func TestValidSchedule(t *testing.T) {
 	tests := []struct {
 		name      string
@@ -142,7 +141,6 @@ func TestValidSchedule(t *testing.T) {
 	}
 }
 
-// Тесты для ScheduleCreate
 func TestScheduleCreate(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -210,7 +208,7 @@ func TestScheduleCreate(t *testing.T) {
 			},
 			schedule: &config.Schedule{
 				StartTime:  "09:00",
-				EndTime:    "11:00", // >30 минут, будут создаваться слоты
+				EndTime:    "11:00",
 				DaysOfWeek: []int{1},
 				RoomID:     uuid.New(),
 			},

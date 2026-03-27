@@ -8,6 +8,9 @@ import (
 )
 
 type MockDatabase struct {
+	CreateUserFunc     func(user config.User) error
+	GetUserByEmailFunc func(email string) (config.User, error)
+
 	CreateScheduleFunc      func(schedule *config.Schedule, roomID uuid.UUID, user config.User) error
 	CreateSlotFunc          func(slot config.Slot, startSlot time.Time, endSlot time.Time) error
 	GetSlotsListFunc        func(roomID uuid.UUID, dateRequest time.Time) ([]config.Slot, error)
@@ -21,9 +24,23 @@ type MockDatabase struct {
 	GetBookingBySlotIDFunc       func(slotID uuid.UUID) (config.Booking, error)
 	CancelBookingByBookingIDFunc func(bookingID uuid.UUID) (config.Booking, error)
 
-	CreateRoomFunc   func(userID uuid.UUID, room *config.Room) error
+	CreateRoomFunc   func(userID uuid.UUID, room config.Room) error
 	GetRoomFunc      func(roomID uuid.UUID) (config.Room, error)
 	GetRoomsListFunc func() ([]config.Room, error)
+}
+
+func (m *MockDatabase) CreateUser(user config.User) error {
+	if m.CreateScheduleFunc != nil {
+		return m.CreateUserFunc(user)
+	}
+	return nil
+}
+
+func (m *MockDatabase) GetUserByEmail(email string) (config.User, error) {
+	if m.CreateScheduleFunc != nil {
+		return m.GetUserByEmailFunc(email)
+	}
+	return config.User{}, nil
 }
 
 func (m *MockDatabase) CreateSchedule(schedule *config.Schedule, roomID uuid.UUID, user config.User) error {
@@ -103,7 +120,7 @@ func (m *MockDatabase) CancelBookingByBookingID(bookingID uuid.UUID) (config.Boo
 	return config.Booking{}, nil
 }
 
-func (m *MockDatabase) CreateRoom(userID uuid.UUID, room *config.Room) error {
+func (m *MockDatabase) CreateRoom(userID uuid.UUID, room config.Room) error {
 	if m.CreateRoomFunc != nil {
 		return m.CreateRoomFunc(userID, room)
 	}
