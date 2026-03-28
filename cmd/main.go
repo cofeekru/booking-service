@@ -10,6 +10,8 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	_ "github.com/swaggo/files"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
 func main() {
@@ -50,6 +52,12 @@ func main() {
 	router.Get("/_info", func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	})
+
+	router.Handle("/api.yaml", http.FileServer(http.Dir("./api")))
+	router.Get("/swagger/*", httpSwagger.Handler(
+		httpSwagger.URL("/api.yaml"),
+	))
+
 	server := &http.Server{
 		Addr:        cfg.HTTPServer.Host,
 		Handler:     router,

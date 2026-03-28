@@ -33,13 +33,10 @@ func ValidSchedule(schedule config.Schedule) bool {
 }
 
 func ScheduleCreate(storage config.Database, schedule *config.Schedule, roomID uuid.UUID, user config.User) error {
-	newUUID, err := uuid.NewV6()
+	newUUID := uuid.New()
 
-	if err != nil {
-		return err
-	}
 	schedule.ID = newUUID
-	err = storage.CreateSchedule(schedule, roomID, user)
+	err := storage.CreateSchedule(schedule, roomID, user)
 
 	if err != nil {
 		return err

@@ -32,7 +32,7 @@ func TestEndToEndFlow(t *testing.T) {
 	room.Description = "This is my test and best room"
 	room.Capacity = 100
 
-	err = createRoom(baseURL, adminToken, &room)
+	room, err = createRoom(baseURL, adminToken, room)
 
 	if err != nil {
 		slog.Error(err.Error())
@@ -58,6 +58,7 @@ func TestEndToEndFlow(t *testing.T) {
 
 	if len(slots) == 0 {
 		slog.Error("слотов нет")
+		return
 	}
 	assert.NoError(t, err)
 	assert.NotZero(t, slots)
@@ -108,7 +109,7 @@ func getAuthToken(baseURL string, user config.User) (config.Token, error) {
 	return token, nil
 }
 
-func createRoom(baseURL string, token config.Token, room *config.Room) error {
+func createRoom(baseURL string, token config.Token, room config.Room) (config.Room, error) {
 	client := &http.Client{}
 
 	reqBody, _ := json.Marshal(room)
@@ -119,7 +120,7 @@ func createRoom(baseURL string, token config.Token, room *config.Room) error {
 	)
 	if err != nil {
 		slog.Info(err.Error())
-		return err
+		return config.Room{}, err
 	}
 
 	req.Header.Set("Content-Type", "application/json")
@@ -128,23 +129,22 @@ func createRoom(baseURL string, token config.Token, room *config.Room) error {
 	resp, err := client.Do(req)
 	if err != nil {
 		slog.Info(err.Error())
-		return err
+		return config.Room{}, err
 	}
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
-		return fmt.Errorf("schedule creation failed with status: %d", resp.StatusCode)
+		return config.Room{}, fmt.Errorf("Room creation failed with status: %d", resp.StatusCode)
 	}
 
 	var result config.Room
 
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		slog.Info(err.Error())
-		return err
+		return config.Room{}, err
 	}
 
-	room.ID = result.ID
-	return nil
+	return result, nil
 }
 
 func createSchedule(baseURL string, token config.Token, room config.Room) (config.Schedule, error) {
@@ -156,7 +156,6 @@ func createSchedule(baseURL string, token config.Token, room config.Room) (confi
 		StartTime:  "09:00",
 		EndTime:    "21:00",
 	}
-
 	reqBody, _ := json.Marshal(scheduleReq)
 	req, err := http.NewRequest(
 		"POST",
@@ -179,7 +178,7 @@ func createSchedule(baseURL string, token config.Token, room config.Room) (confi
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
-		return config.Schedule{}, fmt.Errorf("schedule creation failed with status: %d", resp.StatusCode)
+		return config.Schedule{}, fmt.Errorf("Schedule creation failed with status: %d", resp.StatusCode)
 	}
 
 	var result config.Schedule
@@ -209,7 +208,7 @@ func getSlotsList(baseURL string, token config.Token, room config.Room, date str
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return []config.Slot{}, fmt.Errorf("login failed with status: %d", resp.StatusCode)
+		return []config.Slot{}, fmt.Errorf("Slots getting failed with status: %d", resp.StatusCode)
 	}
 
 	var slots []config.Slot
@@ -251,7 +250,7 @@ func bookSlot(baseURL string, token config.Token, slot config.Slot) (config.Book
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusCreated {
-		return config.Booking{}, fmt.Errorf("booking failed with status: %d", resp.StatusCode)
+		return config.Booking{}, fmt.Errorf("Booking failed with status: %d", resp.StatusCode)
 	}
 
 	var result config.Booking

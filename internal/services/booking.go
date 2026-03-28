@@ -2,6 +2,7 @@ package services
 
 import (
 	"avito_tech_backend/internal/config"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -9,7 +10,7 @@ import (
 func CreateBooking(storage config.Database, booking *config.Booking) error {
 	booking.ID = uuid.New()
 	booking.Status = "active"
-
+	booking.CreatedAt = time.Now().Format(time.RFC3339)
 	err := storage.CreateBooking(booking)
 
 	return err

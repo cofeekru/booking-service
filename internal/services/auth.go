@@ -2,6 +2,7 @@ package services
 
 import (
 	"log/slog"
+	"net/mail"
 	"time"
 
 	"avito_tech_backend/internal/config"
@@ -48,6 +49,11 @@ func RegisterUser(storage config.Database, user config.User) (config.User, error
 	}
 	return user, nil
 
+}
+
+func EmailValidate(email string) bool {
+	_, err := mail.ParseAddress(email)
+	return err == nil
 }
 
 func hashPassword(password string) (string, error) {

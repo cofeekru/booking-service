@@ -62,7 +62,7 @@ func RegisterHandler(storage config.Database) http.HandlerFunc {
 
 		var userRole config.UserRole
 		userRole.Role = user.Role
-		if !userRole.Valid() || services.EmailExist(storage, user.Email) {
+		if !userRole.Valid() || !services.EmailValidate(user.Email) || services.EmailExist(storage, user.Email) {
 			slog.Info("Неверный запрос или email уже занят")
 			http.Error(w, string(config.INVALID_REQUEST), http.StatusBadRequest)
 			return

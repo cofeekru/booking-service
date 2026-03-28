@@ -100,7 +100,7 @@ func getAuthToken(baseURL string, user config.User) (config.Token, error) {
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return config.Token{}, fmt.Errorf("login failed with status: %d", resp.StatusCode)
+		return config.Token{}, fmt.Errorf("Login failed with status: %d", resp.StatusCode)
 	}
 
 	var token config.Token
@@ -136,7 +136,7 @@ func getUserBookings(baseURL string, token config.Token) ([]config.Booking, erro
 	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
-		return []config.Booking{}, fmt.Errorf("booking failed with status: %d", resp.StatusCode)
+		return []config.Booking{}, fmt.Errorf("Booking failed with status: %d", resp.StatusCode)
 	}
 
 	var result []config.Booking
