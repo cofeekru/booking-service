@@ -6,14 +6,12 @@ pipeline {
                 cleanWs()
             }
         }
-        stage('Verify Workspace') {
+        stage('Checkout Code') {
             steps {
-                sh 'pwd'
-                sh 'ls -la'
-                sh 'find . -name "Dockerfile*" -o -name "dockerfile*"'
+                git url: 'https://your-repo-url.git', branch: 'main'
             }
         }
-        
+
         stage('Build') {
             steps {
                 sh 'docker build -t my-app:latest' 
