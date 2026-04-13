@@ -26,10 +26,10 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')]) {
-                    sh 'cp $KUBE_CONFIG ~/.kube/config'
-                    sh './deploy/apply.sh'
-                }
+                kubernetesDeploy(
+                    configs: 'deploy/postgres/postgres-deployment.yaml, deploy/postgres/postgres-pvc.yaml, deploy/postgres/postgres-service.yaml, deploy/app/deployment.yaml, deploy/app/service.yaml',
+                    kubeconfigId: 'kubeconfig-minikube'
+                )
             }
         }
     }
