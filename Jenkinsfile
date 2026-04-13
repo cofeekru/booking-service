@@ -1,6 +1,12 @@
 pipeline {
     agent any
     stages {
+        stage('Cleanup') {
+            steps {
+                cleanWs()
+            }
+        }
+        
         stage('Build') {
             steps {
                 sh 'docker build -t my-app:latest .' 
