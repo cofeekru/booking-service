@@ -26,10 +26,13 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                kubernetesDeploy(
-                    configs: 'deploy/postgres/postgres-deployment.yaml, deploy/postgres/postgres-pvc.yaml, deploy/postgres/postgres-service.yaml, deploy/app/deployment.yaml, deploy/app/service.yaml',
-                    kubeconfigId: 'kubeconfig'
-                )
+                script {
+                    kubernetesDeploy(
+                        configs: 'deploy/postgres/postgres-deployment.yaml, deploy/postgres/postgres-pvc.yaml, deploy/postgres/postgres-service.yaml, deploy/app/deployment.yaml, deploy/app/service.yaml',
+                        kubeconfigId: 'kubeconfig'
+                    )
+                }
+                
             }
         }
     }
