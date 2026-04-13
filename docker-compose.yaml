@@ -4,9 +4,9 @@ services:
   app:
     build: .
     ports:
-      - "8080:8080"
+      - "8000:8000"
     environment:
-      HOST: "0.0.0.0:8080"
+      HOST: "0.0.0.0:8000"
       DB_HOST: db
       DB_PORT: 5432
       DB_NAME: db_avito
@@ -33,12 +33,12 @@ services:
       retries: 10     
       start_period: 10s
     volumes:
-      - postgres_data_e2e:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     networks:
       - e2e-network
 
 volumes:
-  postgres_data_e2e:
+  postgres_data:
 
 networks:
   e2e-network:

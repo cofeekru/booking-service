@@ -23,7 +23,8 @@ func New(connectStorage string) (*Storage, error) {
 		SELECT 'CREATE DATABASE db_avito' 
 		WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'db_avito')`)
 	if err != nil {
-		log.Fatal(err)
+		slog.Error(err.Error())
+		return nil, err
 	}
 
 	database := &Storage{DB: db}

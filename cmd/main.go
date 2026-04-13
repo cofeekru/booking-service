@@ -4,7 +4,6 @@ import (
 	"avito_tech_backend/internal/config"
 	"avito_tech_backend/internal/database"
 	"avito_tech_backend/internal/handlers"
-	"fmt"
 	"log"
 	"log/slog"
 	"net/http"
@@ -17,11 +16,14 @@ import (
 func main() {
 	cfg := config.MustLoad()
 
-	connectStorage := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", cfg.DB_HOST, cfg.DB_PORT, cfg.DB_USER, cfg.DB_PASSWORD, cfg.DB_NAME, cfg.DB_SSL_MODE)
+	//connectStorage := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", cfg.DB_HOST, cfg.DB_PORT, cfg.DB_USER, cfg.DB_PASSWORD, cfg.DB_NAME, cfg.DB_SSL_MODE)
+	connectStorage := "postgresql://postgres:postgres@postgres-service:5432/db_avito"
 	storage, err := database.New(connectStorage)
 
 	if err != nil {
-		log.Fatalf("Failed to init storage: %s", err)
+		slog.Error("Failed to connect storage")
+		slog.Error(err.Error())
+		return
 	}
 
 	router := chi.NewRouter()
@@ -65,7 +67,8 @@ func main() {
 		IdleTimeout: cfg.HTTPServer.IdleTimeout,
 	}
 
-	slog.Info("Starting server...")
+	slog.Info("Starting server at host: ")
+	slog.Info(cfg.Host)
 	if err := server.ListenAndServe(); err != nil {
 		log.Fatalf("Failed to start server: %s", err)
 	}
