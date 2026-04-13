@@ -28,7 +28,7 @@ pipeline {
             steps {
                 kubernetesDeploy(
                     configs: 'deploy/postgres/postgres-deployment.yaml, deploy/postgres/postgres-pvc.yaml, deploy/postgres/postgres-service.yaml, deploy/app/deployment.yaml, deploy/app/service.yaml',
-                    kubeconfigId: 'kubeconfig-minikube'
+                    kubeconfigId: 'kubeconfig'
                 )
             }
         }
