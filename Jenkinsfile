@@ -26,9 +26,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                {
-                    sh './deploy/apply.sh'
-                }
+                sh './deploy/apply.sh'
             }
         }
     }
