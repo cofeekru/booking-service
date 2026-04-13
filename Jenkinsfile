@@ -26,7 +26,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig-minikube', variable: 'KUBE_CONFIG')]) {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')]) {
                     sh '''
                     mkdir -p ~/.kube
                     cp $KUBE_CONFIG ~/.kube/config
