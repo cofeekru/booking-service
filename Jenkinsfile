@@ -34,6 +34,7 @@ pipeline {
                     ./deploy/apply.sh
                 '''
                 }
-        }
+            }
+        }   
     }
 }
