@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Checkout Code') {
             steps {
-                git url: 'https://your-repo-url.git', branch: 'main'
+                git url: 'https://https://github.com/cofeekru/booking-service.git', branch: 'master'
             }
         }
 
