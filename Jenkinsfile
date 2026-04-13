@@ -26,7 +26,8 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([kubernetes(credentialsId: 'kubeconfig')]) {
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')]) {
+                    sh 'cp $KUBE_CONFIG ~/.kube/config'
                     sh './deploy/apply.sh'
                 }
             }
