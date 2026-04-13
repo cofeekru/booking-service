@@ -6,7 +6,14 @@ pipeline {
                 cleanWs()
             }
         }
-
+        stage('Verify Workspace') {
+            steps {
+                sh 'pwd'
+                sh 'ls -la'
+                sh 'find . -name "Dockerfile*" -o -name "dockerfile*"'
+            }
+        }
+        
         stage('Build') {
             steps {
                 sh 'docker build -t my-app:latest' 
