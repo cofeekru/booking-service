@@ -1,11 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage('Cleanup') {
-            steps {
-                cleanWs()
-            }
-        }
         stage('Checkout Code') {
             steps {
                 git url: 'http://github.com/cofeekru/booking-service.git', branch: 'master'
@@ -41,6 +36,6 @@ pipeline {
                 cleanWs()
             }
         }  
-          
+
     }
 }
