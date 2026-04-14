@@ -40,6 +40,7 @@ pipeline {
             steps {
                 cleanWs()
             }
-        }    
+        }  
+          
     }
 }
