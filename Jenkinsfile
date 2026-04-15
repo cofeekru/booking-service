@@ -21,14 +21,10 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')]) {
-                    sh '''
-                    mkdir -p ~/.kube
-                    cp $KUBE_CONFIG ~/.kube/config
-                    chmod 600 ~/.kube/config
-                    ./deploy/apply.sh
-                '''
-                }
+                sh 'minikube update-context'
+
+                sh "./deploy/apply.sh"
+
             }
         }
         stage('Cleanup') {
