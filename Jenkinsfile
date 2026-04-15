@@ -22,6 +22,8 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 sh '''
+                    kubectl config use-context minikube
+                    
                     kubectl apply -f deploy/postgres/postgres-pvc.yaml
                     kubectl apply -f deploy/postgres/postgres-deployment.yaml
                     kubectl apply -f deploy/postgres/postgres-service.yaml
