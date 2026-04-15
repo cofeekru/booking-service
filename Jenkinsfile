@@ -21,16 +21,14 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh '''
-                    kubectl config use-context minikube
-                    
-                    kubectl apply -f deploy/postgres/postgres-pvc.yaml
-                    kubectl apply -f deploy/postgres/postgres-deployment.yaml
-                    kubectl apply -f deploy/postgres/postgres-service.yaml
-
-                    kubectl apply -f deploy/app/deployment.yaml
-                    kubectl apply -f deploy/app/service.yaml
+                withCredentials([file(credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG')]) {
+                    sh '''
+                    mkdir -p ~/.kube
+                    cp $KUBE_CONFIG ~/.kube/config
+                    chmod 600 ~/.kube/config
+                    ./deploy/apply.sh
                 '''
+                }
             }
         }
         stage('Cleanup') {
