@@ -21,10 +21,11 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'minikube update-context --profile=minikube'
-
-                sh "./deploy/apply.sh"
-
+                script {
+                    withKubeConfig([contextName: 'minikube']) {
+                        sh './deploy/apply.sh'
+                    }
+                }
             }
         }
         stage('Cleanup') {
