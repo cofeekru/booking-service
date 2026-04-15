@@ -21,7 +21,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'minikube update-context'
+                sh 'minikube update-context --profile=minikube'
 
                 sh "./deploy/apply.sh"
 
